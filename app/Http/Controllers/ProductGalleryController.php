@@ -32,7 +32,10 @@ class ProductGalleryController extends Controller
                         </form>';
                 })
                 ->editColumn('url', function ($item) {
-                    return '<img style="max-width: 150px;" src="'. $item->url .'"/>';
+                    $newUrl = str_replace('/storage', '/uploads', $item->url);
+
+                    // return url($item->url);
+                    return '<img style="max-width: 150px;" src="'. $newUrl .'"/>';
                 })
                 ->editColumn('is_featured', function ($item) {
                     return $item->is_featured ? 'Yes' : 'No';
@@ -67,11 +70,14 @@ class ProductGalleryController extends Controller
         if($request->hasFile('files'))
         {
             foreach ($files as $file) {
-                $path = $file->store('public/gallery');
+                // $path = $file->store('public/gallery');
+                $destinationPath = public_path('uploads');
+                $imageName = uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move($destinationPath, $imageName);
 
                 ProductGallery::create([
                     'products_id' => $product->id,
-                    'url' => $path
+                    'url' => $imageName
                 ]);
             }
         }

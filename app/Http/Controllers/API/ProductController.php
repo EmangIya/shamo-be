@@ -24,6 +24,9 @@ class ProductController extends Controller
         if($id)
         {
             $product = Product::with(['category','galleries'])->find($id);
+            // foreach ($product as $p) {
+            //     dd($p);
+            // }
 
             if($product)
                 return ResponseFormatter::success(
